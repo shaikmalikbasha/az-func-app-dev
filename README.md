@@ -1,1 +1,1 @@
-# Azure Function with FastAPI along with GitHub actions
+# Azure Function with GitHub actions
