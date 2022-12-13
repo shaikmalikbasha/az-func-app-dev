@@ -1,0 +1,47 @@
+name: Release Workflow
+
+on:
+  push:
+    branches:
+      - "release/**"
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+env:
+  AZURE_FUNCTIONAPP_NAME: func-cos-app-dev
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: "."
+  PYTHON_VERSION: "3.8"
+
+jobs:
+  build:
+    name: 🧪 Build and Release
+    runs-on: ubuntu-latest
+
+    environment:
+      name: Dev
+
+    steps:
+      - name: "Checkout GitHub Action"
+        uses: actions/checkout@v2
+
+      - name: Setup Python ${{ env.PYTHON_VERSION }} Environment
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Before Script
+        id: script
+        run: |
+          python3 -V
+          pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'pip install --upgrade pip
+          pip install -r requirements.txt --target=".python_packages/lib/site-packages"
+          popd
+
+      - name: "Deploy Azure function"
+        uses: Azure/functions-action@v1.4.6
+        id: fa
+        with:
+          app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+          publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
