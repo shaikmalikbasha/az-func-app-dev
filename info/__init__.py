@@ -8,7 +8,7 @@ async def main(req: func.HttpRequest) -> func.HttpResponse:
 
     res = {
         "success": True,
-        "app": {"app": "Simple Hello World Application", "version": "v0.0.1"},
+        "app": {"name": "Simple Hello World Application", "version": "v0.0.1"},
         "status_code": 200,
     }
     logging.info(res)
